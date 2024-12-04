@@ -1,5 +1,6 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, simpledialog
+
 import time
 
 # pip install tk
@@ -46,7 +47,7 @@ class ATMSystem:
             messagebox.showerror("Error", "Card already inserted.")
 
     def enter_pin(self):
-        pin_input = tk.simpledialog.askstring("PIN Entry", "Enter your 4-digit PIN:")
+        pin_input = simpledialog.askstring("PIN Entry", "Enter your 4-digit PIN:")
         if pin_input == self.pin:
             self.label.config(text="PIN Correct. Choose a Transaction.")
             self.withdraw_button.config(state=tk.NORMAL)
@@ -57,14 +58,18 @@ class ATMSystem:
             messagebox.showerror("Error", "Incorrect PIN.")
 
     def withdraw_cash(self):
-        amount = tk.simpledialog.askfloat("Withdrawal", "Enter amount to withdraw:")
-        if amount and amount <= self.account_balance:
+        amount = simpledialog.askfloat("Withdrawal", "Enter amount to withdraw:")
+        if amount is None:  # User clicked "Cancel"
+            messagebox.showinfo("Info", "Withdrawal canceled.")
+            return
+        if amount <= self.account_balance:
             self.account_balance -= amount
             messagebox.showinfo("Success", f"Withdrawal successful. Remaining Balance: ${self.account_balance:.2f}")
         elif amount > self.account_balance:
             messagebox.showerror("Error", "Insufficient funds.")
         else:
             messagebox.showerror("Error", "Invalid amount entered.")
+
 
     def check_balance(self):
         messagebox.showinfo("Balance", f"Your account balance is: ${self.account_balance:.2f}")
