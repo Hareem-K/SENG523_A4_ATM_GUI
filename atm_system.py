@@ -52,9 +52,6 @@ class ATMSystem:
         self.balance_button = tk.Button(self.window, text="Check Balance", command=self.check_balance, state=tk.DISABLED)
         self.balance_button.pack(pady=5)
 
-        self.total_bills_button = tk.Button(self.window, text="Check Total Bills", command=self.check_total_bills, state=tk.DISABLED)
-        self.total_bills_button.pack(pady=5)
-
         self.eject_card_button = tk.Button(self.window, text="Eject Card", command=self.eject_card, state=tk.DISABLED)
         self.eject_card_button.pack(pady=5)
 
@@ -95,7 +92,6 @@ class ATMSystem:
             self.withdraw_button.config(state=tk.NORMAL)
             self.deposit_button.config(state=tk.NORMAL)
             self.balance_button.config(state=tk.NORMAL)
-            self.total_bills_button.config(state=tk.NORMAL)
             self.eject_card_button.config(state=tk.NORMAL)
             self.enter_pin_button.config(state=tk.DISABLED)
         else:
@@ -146,9 +142,6 @@ class ATMSystem:
 
     def verify_bills_availability(self, amount):
         return amount <= self.bills_total
-    
-    def check_total_bills(self):
-        messagebox.showinfo("ATM Cash", f"Total cash available in ATM: ${self.bills_total:.2f}")
 
     def eject_card(self):
         self.card_inserted = False
@@ -158,7 +151,6 @@ class ATMSystem:
         self.withdraw_button.config(state=tk.DISABLED)
         self.deposit_button.config(state=tk.DISABLED)
         self.balance_button.config(state=tk.DISABLED)
-        self.total_bills_button.config(state=tk.DISABLED)
         self.eject_card_button.config(state=tk.DISABLED)
 
     def run(self):
