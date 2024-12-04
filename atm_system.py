@@ -14,6 +14,7 @@ class ATMSystem:
         self.pin = "1234"
         self.account_balance = 1000.0
         self.card_inserted = False
+        self.bills_total = 2000.0
 
         # adding system status
         self.system_operational = True
@@ -50,6 +51,9 @@ class ATMSystem:
 
         self.balance_button = tk.Button(self.window, text="Check Balance", command=self.check_balance, state=tk.DISABLED)
         self.balance_button.pack(pady=5)
+
+        self.total_bills_button = tk.Button(self.window, text="Check Total Bills", command=self.check_total_bills, state=tk.DISABLED)
+        self.total_bills_button.pack(pady=5)
 
         self.eject_card_button = tk.Button(self.window, text="Eject Card", command=self.eject_card, state=tk.DISABLED)
         self.eject_card_button.pack(pady=5)
@@ -91,6 +95,7 @@ class ATMSystem:
             self.withdraw_button.config(state=tk.NORMAL)
             self.deposit_button.config(state=tk.NORMAL)
             self.balance_button.config(state=tk.NORMAL)
+            self.total_bills_button.config(state=tk.NORMAL)
             self.eject_card_button.config(state=tk.NORMAL)
             self.enter_pin_button.config(state=tk.DISABLED)
         else:
@@ -102,33 +107,48 @@ class ATMSystem:
         if amount is None:  # User clicked "Cancel"
             messagebox.showinfo("Info", "Withdrawal canceled.")
             return
-        if amount <= self.account_balance:
-            self.account_balance -= amount
-            messagebox.showinfo("Success", f"Withdrawal successful. Remaining Balance: ${self.account_balance:.2f}")
-        elif amount > self.account_balance:
-            messagebox.showerror("Error", "Insufficient funds.")
-        else:
+        if amount <= 0:
             messagebox.showerror("Error", "Invalid amount entered.")
+            return
+        if amount > self.account_balance:
+            messagebox.showerror("Error", "Insufficient account balance.")
+            return
+        if self.bills_total <= 0:
+            messagebox.showerror("Error", "ATM has no cash available.")
+            return
+        if not self.verify_bills_availability(amount):
+            messagebox.showerror("Error", "Insufficient cash in the ATM.")
+            return
+
+        # Deduct amount from balance and total bills
+        self.account_balance -= amount
+        self.bills_total -= amount
+        messagebox.showinfo("Success", f"Withdrawal successful! Remaining Balance: ${self.account_balance:.2f}")
 
     def deposit_cash(self):
         self.last_activity_time = time.time()
         amount = simpledialog.askfloat("Deposit", "Enter amount to deposit:")
-        
         if amount is None:  # User clicked "Cancel"
             messagebox.showinfo("Info", "Deposit canceled.")
             return
-            
         if amount <= 0:
             messagebox.showerror("Error", "Invalid amount entered.")
             return
-            
+
+        # Update account balance and total bills
         self.account_balance += amount
-        messagebox.showinfo("Success", 
-            f"Deposit successful!\nNew Balance: ${self.account_balance:.2f}")
+        self.bills_total += amount
+        messagebox.showinfo("Success", f"Deposit successful! New Balance: ${self.account_balance:.2f}")
 
     def check_balance(self):
         self.last_activity_time = time.time()
         messagebox.showinfo("Balance", f"Your account balance is: ${self.account_balance:.2f}")
+
+    def verify_bills_availability(self, amount):
+        return amount <= self.bills_total
+    
+    def check_total_bills(self):
+        messagebox.showinfo("ATM Cash", f"Total cash available in ATM: ${self.bills_total:.2f}")
 
     def eject_card(self):
         self.card_inserted = False
@@ -138,6 +158,7 @@ class ATMSystem:
         self.withdraw_button.config(state=tk.DISABLED)
         self.deposit_button.config(state=tk.DISABLED)
         self.balance_button.config(state=tk.DISABLED)
+        self.total_bills_button.config(state=tk.DISABLED)
         self.eject_card_button.config(state=tk.DISABLED)
 
     def run(self):
