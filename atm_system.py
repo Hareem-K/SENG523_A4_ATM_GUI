@@ -74,6 +74,7 @@ class ATMSystem:
         self.window.after(1000, self.start_system_clock)  # update every second
    
     def insert_card(self):
+        self.last_activity_time = time.time()
         if not self.card_inserted:
             self.card_inserted = True
             self.label.config(text="Card Inserted. Please Enter PIN.")
