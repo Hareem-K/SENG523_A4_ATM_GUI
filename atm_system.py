@@ -1,10 +1,13 @@
+# Afrah Mohammad 30144844, Rita Boury 30140089, Hareem Khan 30140959
+
+# pip install tk
+# python atm_system.py
+
 import tkinter as tk
 from tkinter import messagebox, simpledialog
 from datetime import datetime
 import time
 
-# pip install tk
-# python atm_system.py
 class ATMSystem:
     def __init__(self):
         self.window = tk.Tk()
