@@ -4,8 +4,6 @@
 - pip install tk
 - python atm_system.py
 
-### Main System Function Screenshots
-
 ### Group Members
 - Afrah Mohammad
 - Rita Boury
